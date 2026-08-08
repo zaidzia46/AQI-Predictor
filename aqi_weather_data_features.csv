@@ -1,0 +1,2 @@
+timestamp,city,aqi,pm25,temperature,humidity,pressure,wind_speed,wind_deg,clouds,hour,day,month,day_of_week,aqi_lag_1h,aqi_lag_2h,aqi_lag_3h,aqi_lag_24h,pm25_lag_1h,pm25_lag_2h,pm25_lag_3h,pm25_lag_24h,aqi_rolling_mean_3h,aqi_rolling_mean_6h,aqi_rolling_mean_24h,pm25_rolling_mean_3h,pm25_rolling_mean_6h,pm25_rolling_mean_24h,aqi_change_rate,target_aqi_day1,target_aqi_day2,target_aqi_day3
+2026-08-08 10:38:55.200781+00:00,Lahore,55.0,14.2,30.31,65,1002,4,75,68,10,8,8,5,,,,,,,,,55.0,55.0,55.0,14.2,14.2,14.2,,,,
