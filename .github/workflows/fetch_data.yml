@@ -21,9 +21,6 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: Run data collection script
-        env:
-          OPENAQ_KEY: ${{ secrets.OPENAQ_KEY }}
-          OPENWEATHER_KEY: ${{ secrets.OPENWEATHER_KEY }}
         run: python fetch_data.py
 
       - name: Run feature engineering script
