@@ -1,13 +1,10 @@
-# Environment variables (contains secret API keys - never commit this)
 .env
 
-# Python
 venv/
 .venv/
 env/
 __pycache__/
 *.pyc
 
-# OS files
 .DS_Store
 Thumbs.db
