@@ -2,8 +2,8 @@ import pandas as pd
 import numpy as np
 from aqi_calc import calculate_standard_aqi
 
-INPUT_FILE = "aqi_weather_data.csv"
-OUTPUT_FILE = "aqi_weather_data_features.csv"
+INPUT_FILE = "data/raw/aqi_weather_data.csv"
+OUTPUT_FILE = "data/processed/aqi_weather_data_features.csv"
 
 FEATURE_COLUMNS = ["aqi", "pm25"]
 

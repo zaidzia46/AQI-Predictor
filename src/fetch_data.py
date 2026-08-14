@@ -7,7 +7,7 @@ from aqi_calc import calculate_standard_aqi
 CITY_NAME = "Lahore"
 LAT, LON = 31.5204, 74.3587
 
-CSV_FILE = "aqi_weather_data.csv"
+CSV_FILE = "data/raw/aqi_weather_data.csv"
 
 
 def get_weather_data():

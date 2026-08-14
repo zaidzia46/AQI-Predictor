@@ -1,8 +1,8 @@
 import pandas as pd
 
-INPUT_FILE = "aqi_weather_data_features.csv"
-TRAIN_OUTPUT_FILE = "aqi_weather_data_train.csv"
-LATEST_OUTPUT_FILE = "latest_features.csv"
+INPUT_FILE = "data/processed/aqi_weather_data_features.csv"
+TRAIN_OUTPUT_FILE = "data/processed/aqi_weather_data_train.csv"
+LATEST_OUTPUT_FILE = "data/processed/latest_features.csv"
 
 TARGET_COLUMNS = ["target_aqi_day1", "target_aqi_day2", "target_aqi_day3"]
 

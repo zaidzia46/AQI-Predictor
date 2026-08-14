@@ -11,7 +11,7 @@ LAT, LON = 31.5204, 74.3587
 START_DATE = (date.today() - timedelta(days=2 * 365)).isoformat()
 END_DATE = (date.today() - timedelta(days=1)).isoformat()  # yesterday
 
-OUTPUT_FILE = "aqi_weather_data.csv"
+OUTPUT_FILE = "data/raw/aqi_weather_data.csv"
 
 CHUNK_DAYS = 90
 
