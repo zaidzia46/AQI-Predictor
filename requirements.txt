@@ -2,3 +2,5 @@ python-dotenv
 requests
 pandas
 numpy
+matplotlib 
+seaborn

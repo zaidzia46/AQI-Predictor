@@ -1,0 +1,79 @@
+AQI PREDICTOR - EDA SUMMARY
+========================================
+Rows (days): 736
+Date range: 2024-08-09 to 2026-08-14
+
+-- AQI stats --
+count    736.00
+mean     145.47
+std       46.34
+min       37.00
+25%      111.00
+50%      151.00
+75%      167.00
+max      500.00
+Name: aqi, dtype: float64
+
+-- AQI category breakdown (days) --
+  Good                         3 days (  0.4%)
+  Moderate                   121 days ( 16.4%)
+  Unhealthy (Sensitive)      239 days ( 32.5%)
+  Unhealthy                  315 days ( 42.8%)
+  Very Unhealthy              53 days (  7.2%)
+  Hazardous                    5 days (  0.7%)
+
+-- Correlation with AQI (sorted by strength) --
+pm25           0.900
+pm10           0.793
+so2            0.733
+co             0.644
+no2            0.602
+temperature   -0.443
+wind_speed    -0.426
+pressure       0.388
+humidity       0.320
+o3            -0.192
+clouds        -0.063
+Name: aqi, dtype: float64
+
+-- Missing values (raw feature columns) --
+aqi_lag_1d         1
+aqi_lag_2d         2
+aqi_lag_3d         3
+aqi_lag_7d         7
+pm25_lag_1d        1
+pm25_lag_2d        2
+pm25_lag_3d        3
+pm25_lag_7d        7
+aqi_change_rate    1
+target_aqi_day1    1
+target_aqi_day2    2
+target_aqi_day3    3
+dtype: int64
+
+-- AQI change-rate stats --
+count    735.00
+mean       0.07
+std       33.87
+min     -250.00
+25%      -12.50
+50%        0.00
+75%       13.00
+max      347.00
+Name: aqi_change_rate, dtype: float64
+
+-- Average AQI by month --
+month
+1     201.6
+2     152.9
+3     112.8
+4      96.8
+5     137.5
+6     138.2
+7     143.1
+8     121.2
+9     122.4
+10    152.8
+11    181.5
+12    186.6
+Name: aqi, dtype: float64
