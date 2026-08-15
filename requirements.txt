@@ -4,4 +4,4 @@ pandas
 numpy
 matplotlib 
 seaborn
-hopsworks
+hopsworks[python]
