@@ -29,6 +29,11 @@ jobs:
       - name: Run data cleaning script
         run: python src/clean_data.py
 
+      - name: Push features to Hopsworks
+        env:
+          HOPSWORKS_API_KEY: ${{ secrets.HOPSWORKS_API_KEY }}
+        run: python src/push_to_hopsworks.py
+
       - name: Commit and push new data
         run: |
           git config --global user.name "github-actions[bot]"
