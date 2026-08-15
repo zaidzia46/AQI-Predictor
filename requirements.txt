@@ -4,5 +4,3 @@ pandas
 numpy
 matplotlib 
 seaborn
-pyarrow
-hopsworks[python]
