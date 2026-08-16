@@ -17,9 +17,6 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Install pyarrow first
-        run: pip install pyarrow==17.0.0
-
       - name: Install dependencies
         run: pip install -r requirements.txt
 
@@ -31,11 +28,6 @@ jobs:
 
       - name: Run data cleaning script
         run: python src/clean_data.py
-
-      - name: Push features to Hopsworks
-        env:
-          HOPSWORKS_API_KEY: ${{ secrets.HOPSWORKS_API_KEY }}
-        run: python src/push_to_hopsworks.py
 
       - name: Commit and push new data
         run: |
