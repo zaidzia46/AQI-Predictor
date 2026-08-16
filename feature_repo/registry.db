@@ -1,0 +1,104 @@
+
+C
+#
+city_id"city_idJaqi_predictor
+†ó†ÔÐÉ—Þ†ó†ÔÐÉ—Þ
+D
+$
+__dummy"
+__dummy_idJaqi_predictor
+†ó†Ôè©ŸÞ†ó†Ôè©ŸÞ1"$c8db09d9-1beb-4c62-b54d-d6ca6e13ce23*†ó†Ô ¶öÞ2£
+‚
+aqi_daily_featuresaqi_predictorcity_id"
+aqi"
+pm25"
+pm10"
+co"
+so2"
+no2"
+o3"
+temperature"
+humidity"
+pressure"
+
+wind_speed"
+
+clouds"
+day"	
+month"
+day_of_week"
+aqi_change_rate"
+
+aqi_lag_1d"
+
+aqi_lag_2d"
+
+aqi_lag_3d"
+
+aqi_lag_7d"
+pm25_lag_1d"
+pm25_lag_2d"
+pm25_lag_3d"
+pm25_lag_7d"
+aqi_rolling_mean_3d"
+aqi_rolling_mean_7d"
+aqi_rolling_mean_14d"
+pm25_rolling_mean_3d"
+pm25_rolling_mean_7d"
+pm25_rolling_mean_14d"
+target_aqi_day1"
+target_aqi_day2"
+target_aqi_day32€†°–:“	timestampZdata/aqi_features.parquetŠ1feast.infra.offline_stores.file_source.FileSource¢aqi_features_source’†ó†ÔØ‡óË"†ó†ÔØšŠÞ@b
+city_id’latest
+†ó†Ô°ú¦Þ†ó†Ô°ú¦ÞR¡
+ž
+,feast.infra.online_stores.sqlite.SqliteTable"n
+J/home/runner/work/AQI-Predictor/AQI-Predictor/feature_repo/online_store.db aqi_predictor_aqi_daily_featuresb£	timestampZdata/aqi_features.parquetŠ1feast.infra.offline_stores.file_source.FileSource¢aqi_features_sourceªaqi_predictor’†ó†ÔØ‡óË"†ó†ÔØšŠÞŠ/
+
+aqi_predictor
+†ó†Ôˆ’‘Í†ó†Ôˆ’‘Í’Ž
+‹
+aqi_daily_featuresaqi_predictor"feature_view*£
+‚
+aqi_daily_featuresaqi_predictorcity_id"
+aqi"
+pm25"
+pm10"
+co"
+so2"
+no2"
+o3"
+temperature"
+humidity"
+pressure"
+
+wind_speed"
+
+clouds"
+day"	
+month"
+day_of_week"
+aqi_change_rate"
+
+aqi_lag_1d"
+
+aqi_lag_2d"
+
+aqi_lag_3d"
+
+aqi_lag_7d"
+pm25_lag_1d"
+pm25_lag_2d"
+pm25_lag_3d"
+pm25_lag_7d"
+aqi_rolling_mean_3d"
+aqi_rolling_mean_7d"
+aqi_rolling_mean_14d"
+pm25_rolling_mean_3d"
+pm25_rolling_mean_7d"
+pm25_rolling_mean_14d"
+target_aqi_day1"
+target_aqi_day2"
+target_aqi_day32€†°–:“	timestampZdata/aqi_features.parquetŠ1feast.infra.offline_stores.file_source.FileSource¢aqi_features_source’†ó†ÔØ‡óË"†ó†ÔØšŠÞ@b
+city_id’latest
+†ó†Ô°ú¦Þ†ó†Ô°ú¦Þ2†ó†ÔØèíÞB$c11aa8ca-2c55-48df-a114-8491af6fec28
