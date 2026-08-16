@@ -5,15 +5,17 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-FEATURES_FILE = "data/processed/aqi_weather_data_features.parquet"
+# ---------------- CONFIG ----------------
+FEATURES_FILE = "data/processed/aqi_weather_data_features.csv"
 
 FEATURE_GROUP_NAME = "aqi_lahore_daily_features"
 FEATURE_GROUP_VERSION = 1
 FEATURE_GROUP_DESCRIPTION = "Daily aggregated AQI, pollutant, and weather features for Lahore, with 3-day-ahead targets"
+# -----------------------------------------
 
 
 def push_to_hopsworks():
-    df = pd.read_parquet(FEATURES_FILE)
+    df = pd.read_csv(FEATURES_FILE)
     df["timestamp"] = pd.to_datetime(df["timestamp"])
     print(f"Loaded {len(df)} rows from {FEATURES_FILE}")
 

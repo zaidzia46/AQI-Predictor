@@ -41,6 +41,6 @@ jobs:
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add data/raw/aqi_weather_data.csv data/processed/aqi_weather_data_features.parquet data/processed/aqi_weather_data_train.parquet data/processed/latest_features.parquet
+          git add data/raw/aqi_weather_data.csv data/processed/aqi_weather_data_features.csv data/processed/aqi_weather_data_train.csv data/processed/latest_features.csv
           git diff --quiet --cached || git commit -m "Add hourly AQI data + updated features"
           git push
