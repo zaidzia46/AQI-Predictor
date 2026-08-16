@@ -1,7 +1,7 @@
 project: aqi_predictor
-registry: feature_repo/registry.db
+registry: registry.db
 provider: local
 online_store:
   type: sqlite
-  path: feature_repo/online_store.db
+  path: online_store.db
 entity_key_serialization_version: 3
