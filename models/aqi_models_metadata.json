@@ -1,0 +1,100 @@
+{
+  "trained_at": "2026-08-17T12:52:43.206189+00:00",
+  "model_type": "per-horizon model selection (RandomForest vs LightGBM via TimeSeriesSplit CV)",
+  "targets": [
+    "target_aqi_day1",
+    "target_aqi_day2",
+    "target_aqi_day3"
+  ],
+  "feature_columns": [
+    "aqi",
+    "pm25",
+    "pm10",
+    "co",
+    "so2",
+    "no2",
+    "o3",
+    "temperature",
+    "humidity",
+    "pressure",
+    "wind_speed",
+    "clouds",
+    "day",
+    "month",
+    "day_of_week",
+    "aqi_lag_1d",
+    "aqi_lag_2d",
+    "aqi_lag_3d",
+    "aqi_lag_7d",
+    "pm25_lag_1d",
+    "pm25_lag_2d",
+    "pm25_lag_3d",
+    "pm25_lag_7d",
+    "aqi_rolling_mean_3d",
+    "aqi_rolling_mean_7d",
+    "aqi_rolling_mean_14d",
+    "pm25_rolling_mean_3d",
+    "pm25_rolling_mean_7d",
+    "pm25_rolling_mean_14d",
+    "aqi_change_rate"
+  ],
+  "n_train_rows": 578,
+  "n_test_rows": 145,
+  "train_date_range": [
+    "2024-08-22 00:00:00+00:00",
+    "2026-03-22 00:00:00+00:00"
+  ],
+  "test_date_range": [
+    "2026-03-23 00:00:00+00:00",
+    "2026-08-14 00:00:00+00:00"
+  ],
+  "metrics": {
+    "target_aqi_day1": {
+      "mae": 20.906,
+      "rmse": 31.228,
+      "r2": 0.3889
+    },
+    "target_aqi_day2": {
+      "mae": 24.467,
+      "rmse": 32.986,
+      "r2": 0.316
+    },
+    "target_aqi_day3": {
+      "mae": 26.14,
+      "rmse": 35.666,
+      "r2": 0.1983
+    }
+  },
+  "model_selection": {
+    "target_aqi_day1": {
+      "algorithm": "RandomForest",
+      "params": {
+        "n_estimators": 500,
+        "min_samples_leaf": 4,
+        "max_features": 0.5,
+        "max_depth": null
+      },
+      "cv_r2": 0.4672
+    },
+    "target_aqi_day2": {
+      "algorithm": "RandomForest",
+      "params": {
+        "n_estimators": 300,
+        "min_samples_leaf": 2,
+        "max_features": "sqrt",
+        "max_depth": 8
+      },
+      "cv_r2": 0.2805
+    },
+    "target_aqi_day3": {
+      "algorithm": "RandomForest",
+      "params": {
+        "n_estimators": 300,
+        "min_samples_leaf": 15,
+        "max_features": "sqrt",
+        "max_depth": 8
+      },
+      "cv_r2": 0.216
+    }
+  }
+}
