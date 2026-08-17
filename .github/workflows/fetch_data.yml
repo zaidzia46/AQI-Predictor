@@ -35,10 +35,13 @@ jobs:
       - name: Push features to Feast
         run: python src/push_to_feast.py
 
+      - name: Train AQI forecasting models
+        run: python src/train_model.py
+
       - name: Commit and push new data
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add data/raw/aqi_weather_data.csv data/processed/aqi_weather_data_features.csv data/processed/aqi_weather_data_train.csv data/processed/latest_features.csv feature_repo/data/aqi_features.parquet feature_repo/registry.db
+          git add data/raw/aqi_weather_data.csv data/processed/aqi_weather_data_features.csv data/processed/aqi_weather_data_train.csv data/processed/latest_features.csv feature_repo/data/aqi_features.parquet feature_repo/registry.db models/aqi_models.joblib models/aqi_models_metadata.json
           git diff --quiet --cached || git commit -m "Add hourly AQI data + updated features"
           git push
