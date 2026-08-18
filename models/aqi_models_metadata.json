@@ -1,5 +1,5 @@
 {
-  "trained_at": "2026-08-18T04:43:20.850035+00:00",
+  "trained_at": "2026-08-18T05:37:31.457133+00:00",
   "model_type": "per-horizon model selection (RandomForest vs LightGBM via TimeSeriesSplit CV)",
   "targets": [
     "target_aqi_day1",
@@ -60,9 +60,9 @@
       "r2": 0.3034
     },
     "target_aqi_day3": {
-      "mae": 26.21,
-      "rmse": 35.708,
-      "r2": 0.1888
+      "mae": 26.203,
+      "rmse": 35.704,
+      "r2": 0.189
     }
   },
   "model_selection": {
