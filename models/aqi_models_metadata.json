@@ -1,5 +1,5 @@
 {
-  "trained_at": "2026-08-17T23:30:24.547051+00:00",
+  "trained_at": "2026-08-18T01:39:48.830320+00:00",
   "model_type": "per-horizon model selection (RandomForest vs LightGBM via TimeSeriesSplit CV)",
   "targets": [
     "target_aqi_day1",
@@ -38,31 +38,31 @@
     "pm25_rolling_mean_14d",
     "aqi_change_rate"
   ],
-  "n_train_rows": 578,
+  "n_train_rows": 579,
   "n_test_rows": 145,
   "train_date_range": [
     "2024-08-22 00:00:00+00:00",
-    "2026-03-22 00:00:00+00:00"
+    "2026-03-23 00:00:00+00:00"
   ],
   "test_date_range": [
-    "2026-03-23 00:00:00+00:00",
-    "2026-08-14 00:00:00+00:00"
+    "2026-03-24 00:00:00+00:00",
+    "2026-08-15 00:00:00+00:00"
   ],
   "metrics": {
     "target_aqi_day1": {
-      "mae": 20.906,
-      "rmse": 31.228,
-      "r2": 0.3889
+      "mae": 21.053,
+      "rmse": 31.213,
+      "r2": 0.3875
     },
     "target_aqi_day2": {
-      "mae": 24.467,
-      "rmse": 32.986,
-      "r2": 0.316
+      "mae": 24.553,
+      "rmse": 33.228,
+      "r2": 0.3034
     },
     "target_aqi_day3": {
-      "mae": 26.178,
-      "rmse": 35.671,
-      "r2": 0.1972
+      "mae": 26.217,
+      "rmse": 35.711,
+      "r2": 0.1887
     }
   },
   "model_selection": {
@@ -74,7 +74,7 @@
         "max_features": 0.5,
         "max_depth": null
       },
-      "cv_r2": 0.4672
+      "cv_r2": 0.4675
     },
     "target_aqi_day2": {
       "algorithm": "RandomForest",
@@ -84,7 +84,7 @@
         "max_features": "sqrt",
         "max_depth": 8
       },
-      "cv_r2": 0.2805
+      "cv_r2": 0.2786
     },
     "target_aqi_day3": {
       "algorithm": "RandomForest",
@@ -94,7 +94,7 @@
         "max_features": "sqrt",
         "max_depth": 8
       },
-      "cv_r2": 0.216
+      "cv_r2": 0.2118
     }
   }
 }
