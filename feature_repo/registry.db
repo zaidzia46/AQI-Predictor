@@ -7,7 +7,7 @@ D
 $
 __dummy"
 __dummy_idJaqi_predictor
-âè¦ÔĞäÿßâè¦ÔĞäÿß1"$5795e4f0-cf29-425c-ad6e-e55e079dd77b*âè¦ÔĞäÿß2á
+âè¦ÔĞäÿßâè¦ÔĞäÿß1"$886e4340-a681-41d9-9dce-b9bd8cd27be8*‡ë¦Ô Ú2á
 À
 aqi_daily_featuresaqi_predictorcity_id"
 aqi"
@@ -59,10 +59,10 @@ aqi_lag_7d"
 target_aqi_day2"
 target_aqi_day32€†°–:“	timestampZdata/aqi_features.parquetŠ1feast.infra.offline_stores.file_source.FileSource¢aqi_features_source’âè¦ÔĞöõ"âè¦ÔĞäÿß@b
 city_id’latest
-âè¦ÔĞäÿßâè¦ÔĞäÿßR¥
-¢
-,feast.infra.online_stores.sqlite.SqliteTable"r
-NC:\Users\PMLS\Desktop\DataSci-Internship\project2\feature_repo\online_store.db aqi_predictor_aqi_daily_featuresb£	timestampZdata/aqi_features.parquetŠ1feast.infra.offline_stores.file_source.FileSource¢aqi_features_sourceªaqi_predictor’âè¦ÔĞöõ"âè¦ÔĞäÿßŠ/
+âè¦ÔĞäÿßâè¦ÔĞäÿßR¡
+
+,feast.infra.online_stores.sqlite.SqliteTable"n
+J/home/runner/work/AQI-Predictor/AQI-Predictor/feature_repo/online_store.db aqi_predictor_aqi_daily_featuresb£	timestampZdata/aqi_features.parquetŠ1feast.infra.offline_stores.file_source.FileSource¢aqi_features_sourceªaqi_predictor’âè¦ÔĞöõ"âè¦ÔĞäÿßŠ/
 
 aqi_predictor
 âè¦ÔĞöõâè¦ÔĞöõ’Ì
