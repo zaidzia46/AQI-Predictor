@@ -1,5 +1,5 @@
 {
-  "trained_at": "2026-08-22T12:53:55.052031+00:00",
+  "trained_at": "2026-08-22T14:41:18.705071+00:00",
   "model_type": "per-horizon model selection (RandomForest vs XGBoost via TimeSeriesSplit CV)",
   "targets": [
     "target_aqi_day1",
