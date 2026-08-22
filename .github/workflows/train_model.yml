@@ -1,0 +1,46 @@
+name: Train AQI Model (daily)
+
+on:
+  schedule:
+    - cron: '26 3 * * *'
+  workflow_dispatch:
+
+# Allow the default GITHUB_TOKEN to push the committed model back to main.
+permissions:
+  contents: write
+
+concurrency:
+  group: train-aqi-model
+  cancel-in-progress: false
+
+jobs:
+  train-model:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install pyarrow first
+        run: pip install pyarrow==17.0.0
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Train AQI forecasting models
+        run: python src/train_model.py
+
+      - name: Commit and push the retrained model
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          # Rebase on top of anything the hourly job pushed in the meantime so
+          # this model commit doesn't race the data commit.
+          git pull --rebase --autostash origin main
+          git add models/aqi_models.joblib models/aqi_models_metadata.json
+          git diff --quiet --cached || git commit -m "Retrain AQI models (daily)"
+          git push
