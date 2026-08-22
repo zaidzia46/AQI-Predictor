@@ -1,3 +1,4 @@
+import os
 import requests
 import pandas as pd
 from datetime import date, timedelta
@@ -6,9 +7,8 @@ from aqi_calc import calculate_standard_aqi
 CITY_NAME = "Lahore"
 LAT, LON = 31.5204, 74.3587
 
-# Open-Meteo's air quality (CAMS) historical data starts around mid-2022.
-# We ask for 2 years back from today to stay safely within available coverage.
-START_DATE = (date.today() - timedelta(days=2 * 365)).isoformat()
+EARLIEST_AVAILABLE = "2022-08-13"
+START_DATE = EARLIEST_AVAILABLE
 END_DATE = (date.today() - timedelta(days=1)).isoformat()  # yesterday
 
 OUTPUT_FILE = "data/raw/aqi_weather_data.csv"
@@ -93,6 +93,8 @@ def backfill():
     full_df["timestamp"] = pd.to_datetime(full_df["timestamp"]).dt.tz_localize("UTC")
     full_df["city"] = CITY_NAME
 
+    full_df = full_df.dropna(subset=["pm25", "pm10", "co", "so2", "no2", "o3"], how="all")
+
     full_df["aqi"] = full_df.apply(
         lambda row: calculate_standard_aqi(
             pm25=row["pm25"], pm10=row["pm10"], co=row["co"],
@@ -106,6 +108,18 @@ def backfill():
         "timestamp", "city", "aqi", "pm25", "pm10", "co", "so2", "no2", "o3",
         "temperature", "humidity", "pressure", "wind_speed", "wind_deg", "clouds"
     ]]
+
+    # Non-destructive merge: if a raw file already exists (e.g. hourly rows
+    # appended by fetch_data.py, or a prior backfill), union on the hourly
+    # timestamp and keep the already-present row on any collision. This makes
+    # backfill safe to re-run without clobbering live-collected data.
+    if os.path.isfile(OUTPUT_FILE):
+        existing = pd.read_csv(OUTPUT_FILE)
+        existing["timestamp"] = pd.to_datetime(existing["timestamp"], format="mixed", utc=True)
+        combined = pd.concat([full_df, existing], ignore_index=True)
+        combined["_hour"] = combined["timestamp"].dt.floor("h")
+        combined = combined.drop_duplicates(subset="_hour", keep="last").drop(columns="_hour")
+        full_df = combined.sort_values("timestamp").reset_index(drop=True)
 
     full_df.to_csv(OUTPUT_FILE, index=False)
     print(f"Saved {len(full_df)} historical rows to {OUTPUT_FILE}")

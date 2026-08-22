@@ -1,6 +1,6 @@
 {
-  "trained_at": "2026-08-18T05:37:31.457133+00:00",
-  "model_type": "per-horizon model selection (RandomForest vs LightGBM via TimeSeriesSplit CV)",
+  "trained_at": "2026-08-22T10:55:21.242043+00:00",
+  "model_type": "per-horizon model selection (RandomForest vs XGBoost via TimeSeriesSplit CV)",
   "targets": [
     "target_aqi_day1",
     "target_aqi_day2",
@@ -19,9 +19,9 @@
     "pressure",
     "wind_speed",
     "clouds",
-    "day",
     "month",
-    "day_of_week",
+    "doy_sin",
+    "doy_cos",
     "aqi_lag_1d",
     "aqi_lag_2d",
     "aqi_lag_3d",
@@ -36,65 +36,72 @@
     "pm25_rolling_mean_3d",
     "pm25_rolling_mean_7d",
     "pm25_rolling_mean_14d",
-    "aqi_change_rate"
+    "aqi_change_rate",
+    "wind_speed_roll_3d",
+    "temperature_roll_3d",
+    "humidity_roll_3d",
+    "pressure_roll_3d",
+    "wind_speed_roll_7d",
+    "temperature_roll_7d",
+    "humidity_roll_7d"
   ],
-  "n_train_rows": 579,
-  "n_test_rows": 145,
+  "n_train_rows": 1168,
+  "n_test_rows": 293,
   "train_date_range": [
-    "2024-08-22 00:00:00+00:00",
-    "2026-03-23 00:00:00+00:00"
+    "2022-08-20 00:00:00+00:00",
+    "2025-10-30 00:00:00+00:00"
   ],
   "test_date_range": [
-    "2026-03-24 00:00:00+00:00",
-    "2026-08-15 00:00:00+00:00"
+    "2025-10-31 00:00:00+00:00",
+    "2026-08-19 00:00:00+00:00"
   ],
   "metrics": {
     "target_aqi_day1": {
-      "mae": 21.053,
-      "rmse": 31.213,
-      "r2": 0.3875
+      "mae": 17.827,
+      "rmse": 27.302,
+      "r2": 0.6669
     },
     "target_aqi_day2": {
-      "mae": 24.553,
-      "rmse": 33.228,
-      "r2": 0.3034
+      "mae": 22.937,
+      "rmse": 32.453,
+      "r2": 0.5287
     },
     "target_aqi_day3": {
-      "mae": 26.203,
-      "rmse": 35.704,
-      "r2": 0.189
+      "mae": 24.372,
+      "rmse": 33.543,
+      "r2": 0.4958
     }
   },
   "model_selection": {
     "target_aqi_day1": {
       "algorithm": "RandomForest",
       "params": {
-        "n_estimators": 500,
-        "min_samples_leaf": 4,
+        "n_estimators": 300,
+        "min_samples_leaf": 15,
         "max_features": 0.5,
-        "max_depth": null
+        "max_depth": 8
       },
-      "cv_r2": 0.4675
+      "cv_r2": 0.4829
     },
     "target_aqi_day2": {
       "algorithm": "RandomForest",
       "params": {
-        "n_estimators": 300,
-        "min_samples_leaf": 2,
-        "max_features": "sqrt",
-        "max_depth": 8
+        "n_estimators": 200,
+        "min_samples_leaf": 4,
+        "max_features": 0.5,
+        "max_depth": 5
       },
-      "cv_r2": 0.2786
+      "cv_r2": 0.189
     },
     "target_aqi_day3": {
       "algorithm": "RandomForest",
       "params": {
-        "n_estimators": 300,
-        "min_samples_leaf": 15,
-        "max_features": "sqrt",
-        "max_depth": 8
+        "n_estimators": 200,
+        "min_samples_leaf": 4,
+        "max_features": 0.5,
+        "max_depth": 5
       },
-      "cv_r2": 0.2118
+      "cv_r2": 0.108
     }
   }
 }

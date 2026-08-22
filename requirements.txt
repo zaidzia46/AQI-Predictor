@@ -2,10 +2,9 @@ python-dotenv
 requests
 pandas
 numpy
-matplotlib 
+matplotlib
 seaborn
 feast
-# xgboost
-# lightgbm
-# scikit-learn
-# joblib
+xgboost
+scikit-learn
+joblib

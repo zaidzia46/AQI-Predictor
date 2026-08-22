@@ -1,28 +1,3 @@
-"""
-Train 3-day-ahead AQI forecasting models, using historical features
-retrieved from the local Feast feature store (point-in-time correct
-join), rather than reading the processed CSV directly.
-
-Flow:
-    1. Build an entity dataframe (city_id, event_timestamp) from the rows
-       that are known-trainable (data/processed/aqi_weather_data_train.csv
-       already tells us which timestamps have complete features + targets).
-    2. Ask Feast for a curated feature set (see CURATED_FEATURES) for those
-       entity rows via get_historical_features().
-    3. Chronological train/test split (never shuffle time series data).
-    4. For EACH horizon (day1/day2/day3) independently: run
-       RandomizedSearchCV with TimeSeriesSplit cross-validation across two
-       model families (RandomForest, LightGBM), and keep whichever
-       family/hyperparameters had the best cross-validated R2. Different
-       horizons often favor different models/hyperparameters as the
-       signal-to-noise ratio drops with distance, so this is a genuine
-       per-horizon model-selection pipeline rather than one fixed algorithm.
-    5. Evaluate the chosen model per horizon on the held-out test set.
-    6. Save all three fitted models (as a dict, keyed by target column)
-       plus metadata (feature list, chosen algorithm/params, metrics) to
-       models/ for later use by a prediction/serving script.
-"""
-
 import json
 import os
 from datetime import datetime, timezone
@@ -31,12 +6,11 @@ import joblib
 import numpy as np
 import pandas as pd
 from feast import FeatureStore
-from lightgbm import LGBMRegressor
+from xgboost import XGBRegressor
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 from sklearn.model_selection import RandomizedSearchCV, TimeSeriesSplit
 
-# ---- Paths -------------------------------------------------------------
 TRAIN_ENTITY_SOURCE = "data/processed/aqi_weather_data_train.csv"
 FEATURE_REPO_DIR = "feature_repo"
 MODEL_DIR = "models"
@@ -50,19 +24,20 @@ ENTITY_COLUMN = "city_id"
 TARGET_COLUMNS = ["target_aqi_day1", "target_aqi_day2", "target_aqi_day3"]
 
 RANDOM_STATE = 42
-TEST_SIZE_FRACTION = 0.2  # last 20% of the timeline held out for testing
+TEST_SIZE_FRACTION = 0.2
 CV_SPLITS = 5
-SEARCH_ITER = 20  # RandomizedSearchCV iterations per model family per horizon
+SEARCH_ITER = 20
 
 # --- Candidate models for per-horizon selection --------------------------
-# Benchmarking showed no single algorithm wins on every horizon (LightGBM
-# tends to win day1, tuned RandomForest tends to win day2/day3 - the
-# signal-to-noise ratio drops as the horizon lengthens, which favors more
-# heavily regularized trees). Rather than hardcoding a winner picked by eye
-# off one 145-row test split, each horizon runs its own RandomizedSearchCV
-# across both families using TimeSeriesSplit cross-validation on the
-# training set only, and whichever wins on CV R2 is what actually gets
-# evaluated on the held-out test set.
+# No single algorithm wins on every horizon, so each horizon runs its own
+# RandomizedSearchCV across both families using TimeSeriesSplit CV on the
+# training set only, and whichever wins on CV R2 is evaluated on the held-out
+# test set. On the current data RandomForest wins all three horizons, but
+# XGBoost is close on day1 and kept as a genuine competitor.
+#
+# (Note: an earlier version imported LightGBM here, which is not in
+# requirements.txt and crashed on import; replaced with XGBoost, which is
+# installed and benchmarked competitively.)
 CANDIDATE_MODELS = {
     "RandomForest": (
         lambda: RandomForestRegressor(random_state=RANDOM_STATE, n_jobs=-1),
@@ -73,12 +48,11 @@ CANDIDATE_MODELS = {
             "max_features": ["sqrt", 0.5, 0.7],
         },
     ),
-    "LightGBM": (
-        lambda: LGBMRegressor(random_state=RANDOM_STATE, verbosity=-1),
+    "XGBoost": (
+        lambda: XGBRegressor(random_state=RANDOM_STATE, n_jobs=-1),
         {
-            "n_estimators": [100, 200, 300],
-            "num_leaves": [7, 15, 31],
-            "min_child_samples": [10, 15, 25],
+            "n_estimators": [300, 500, 700],
+            "max_depth": [3, 4, 5],
             "learning_rate": [0.02, 0.03, 0.05, 0.1],
             "subsample": [0.7, 0.8, 1.0],
             "colsample_bytree": [0.6, 0.7, 0.8, 1.0],
@@ -88,29 +62,18 @@ CANDIDATE_MODELS = {
     ),
 }
 
-# --- Feature selection ---------------------------------------------------
-# feature_engineering.py now generates lag/rolling/change-rate features for
-# EVERY pollutant + weather variable (115 features), and the Feast schema
-# (future_definitions.py) tracks all of them automatically. But benchmarking
-# on our current data volume (722 rows) showed the FULL feature set
-# overfits badly: RandomForest/XGBoost/Ridge all saw R2 go negative on the
-# 2- and 3-day-ahead targets when trained on all 115 features. This curated
-# subset (aqi/pm25 lag+rolling, all raw pollutants/weather, time features)
-# was the most robust across all three horizons in that comparison.
-#
-# The full feature set stays available in Feast for later experiments --
-# once we have more years of history (see backfill_data.py), it's worth
-# re-benchmarking with the wider set, since more rows should let the model
-# support more features without overfitting.
 CURATED_FEATURES = [
     "aqi", "pm25", "pm10", "co", "so2", "no2", "o3",
     "temperature", "humidity", "pressure", "wind_speed", "clouds",
-    "day", "month", "day_of_week",
+    "month", "doy_sin", "doy_cos",
     "aqi_lag_1d", "aqi_lag_2d", "aqi_lag_3d", "aqi_lag_7d",
     "pm25_lag_1d", "pm25_lag_2d", "pm25_lag_3d", "pm25_lag_7d",
     "aqi_rolling_mean_3d", "aqi_rolling_mean_7d", "aqi_rolling_mean_14d",
     "pm25_rolling_mean_3d", "pm25_rolling_mean_7d", "pm25_rolling_mean_14d",
     "aqi_change_rate",
+    "wind_speed_roll_3d", "temperature_roll_3d", "humidity_roll_3d",
+    "pressure_roll_3d", "wind_speed_roll_7d", "temperature_roll_7d",
+    "humidity_roll_7d",
 ]
 
 
@@ -169,8 +132,6 @@ def fetch_training_data():
 
     print(f"Retrieved {len(training_df)} rows x {training_df.shape[1]} columns from Feast.")
 
-    # Point-in-time joins can leave NaNs if any requested timestamp falls
-    # outside the source's coverage - drop those defensively.
     before = len(training_df)
     training_df = training_df.dropna(subset=feature_fields + TARGET_COLUMNS).reset_index(drop=True)
     dropped = before - len(training_df)
@@ -261,7 +222,7 @@ def save_artifacts(models, metrics, selection_info, train_df, test_df, feature_f
 
     metadata = {
         "trained_at": datetime.now(timezone.utc).isoformat(),
-        "model_type": "per-horizon model selection (RandomForest vs LightGBM via TimeSeriesSplit CV)",
+        "model_type": "per-horizon model selection (RandomForest vs XGBoost via TimeSeriesSplit CV)",
         "targets": TARGET_COLUMNS,
         "feature_columns": feature_fields,
         "n_train_rows": len(train_df),

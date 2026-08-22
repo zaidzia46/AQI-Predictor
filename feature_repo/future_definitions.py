@@ -31,6 +31,9 @@ aqi_feature_view = FeatureView(
         Field(name="day", dtype=Int64),
         Field(name="month", dtype=Int64),
         Field(name="day_of_week", dtype=Int64),
+        # Cyclical seasonal encoding (day-of-year -> sin/cos)
+        Field(name="doy_sin", dtype=Float64),
+        Field(name="doy_cos", dtype=Float64),
         Field(name="aqi_change_rate", dtype=Float64),
         # Lag features - value N days ago (created by feature_engineering.py)
         Field(name="aqi_lag_1d", dtype=Float64),
@@ -48,6 +51,14 @@ aqi_feature_view = FeatureView(
         Field(name="pm25_rolling_mean_3d", dtype=Float64),
         Field(name="pm25_rolling_mean_7d", dtype=Float64),
         Field(name="pm25_rolling_mean_14d", dtype=Float64),
+        # Weather rolling means (leading indicators of AQI)
+        Field(name="wind_speed_roll_3d", dtype=Float64),
+        Field(name="temperature_roll_3d", dtype=Float64),
+        Field(name="humidity_roll_3d", dtype=Float64),
+        Field(name="pressure_roll_3d", dtype=Float64),
+        Field(name="wind_speed_roll_7d", dtype=Float64),
+        Field(name="temperature_roll_7d", dtype=Float64),
+        Field(name="humidity_roll_7d", dtype=Float64),
         Field(name="target_aqi_day1", dtype=Float64),
         Field(name="target_aqi_day2", dtype=Float64),
         Field(name="target_aqi_day3", dtype=Float64),

@@ -2,13 +2,18 @@
 C
 #
 city_id"city_idJaqi_predictor
-†ó†ÔÐÉ—Þ†ó†ÔÐÉ—Þ
+÷ú¥Ôø¬ã ÷ú¥Ôø¬ã 
 D
 $
 __dummy"
 __dummy_idJaqi_predictor
+<<<<<<< HEAD
 †ó†Ôè©ŸÞ†ó†Ôè©ŸÞ1"$b275e37e-d99d-4a30-b822-0cdb998d7815*†¦ÔÐŒà‡2£
 ‚
+=======
+÷ú¥Ôø¬ã ÷ú¥Ôø¬ã 1"$4b956a07-9c62-4a60-b389-4391e283ba05*÷ú¥Ôø¬ã 2á
+À
+>>>>>>> 7891653 (add extra data + features)
 aqi_daily_featuresaqi_predictorcity_id"
 aqi"
 pm25"
@@ -26,7 +31,9 @@ wind_speed"
 clouds"
 day"	
 month"
-day_of_week"
+day_of_week"
+doy_sin"
+doy_cos"
 aqi_change_rate"
 
 aqi_lag_1d"
@@ -45,21 +52,28 @@ aqi_lag_7d"
 aqi_rolling_mean_14d"
 pm25_rolling_mean_3d"
 pm25_rolling_mean_7d"
-pm25_rolling_mean_14d"
+pm25_rolling_mean_14d"
+wind_speed_roll_3d"
+temperature_roll_3d"
+humidity_roll_3d"
+pressure_roll_3d"
+wind_speed_roll_7d"
+temperature_roll_7d"
+humidity_roll_7d"
 target_aqi_day1"
 target_aqi_day2"
-target_aqi_day32€†°–:“	timestampZdata/aqi_features.parquetŠ1feast.infra.offline_stores.file_source.FileSource¢aqi_features_source’†ó†ÔØ‡óË"†ó†ÔØšŠÞ@b
+target_aqi_day32€†°–:“	timestampZdata/aqi_features.parquetŠ1feast.infra.offline_stores.file_source.FileSource¢aqi_features_source’÷ú¥Ô€Óð€"÷ú¥Ôø¬ã @b
 city_id’latest
-†ó†Ô°ú¦Þ†ó†Ô°ú¦ÞR¡
-ž
-,feast.infra.online_stores.sqlite.SqliteTable"n
-J/home/runner/work/AQI-Predictor/AQI-Predictor/feature_repo/online_store.db aqi_predictor_aqi_daily_featuresb£	timestampZdata/aqi_features.parquetŠ1feast.infra.offline_stores.file_source.FileSource¢aqi_features_sourceªaqi_predictor’†ó†ÔØ‡óË"†ó†ÔØšŠÞŠ/
+÷ú¥Ôø¬ã ÷ú¥Ôø¬ã R¥
+¢
+,feast.infra.online_stores.sqlite.SqliteTable"r
+NC:\Users\PMLS\Desktop\DataSci-Internship\project2\feature_repo\online_store.db aqi_predictor_aqi_daily_featuresb£	timestampZdata/aqi_features.parquetŠ1feast.infra.offline_stores.file_source.FileSource¢aqi_features_sourceªaqi_predictor’÷ú¥Ô€Óð€"÷ú¥Ôø¬ã Š/
 
 aqi_predictor
-†ó†Ôˆ’‘Í†ó†Ôˆ’‘Í’Ž
-‹
-aqi_daily_featuresaqi_predictor"feature_view*£
-‚
+÷ú¥Ô€Óð€÷ú¥Ô€Óð€’Ì
+É
+aqi_daily_featuresaqi_predictor"feature_view*á
+À
 aqi_daily_featuresaqi_predictorcity_id"
 aqi"
 pm25"
@@ -77,7 +91,9 @@ wind_speed"
 clouds"
 day"	
 month"
-day_of_week"
+day_of_week"
+doy_sin"
+doy_cos"
 aqi_change_rate"
 
 aqi_lag_1d"
@@ -96,9 +112,16 @@ aqi_lag_7d"
 aqi_rolling_mean_14d"
 pm25_rolling_mean_3d"
 pm25_rolling_mean_7d"
-pm25_rolling_mean_14d"
+pm25_rolling_mean_14d"
+wind_speed_roll_3d"
+temperature_roll_3d"
+humidity_roll_3d"
+pressure_roll_3d"
+wind_speed_roll_7d"
+temperature_roll_7d"
+humidity_roll_7d"
 target_aqi_day1"
 target_aqi_day2"
-target_aqi_day32€†°–:“	timestampZdata/aqi_features.parquetŠ1feast.infra.offline_stores.file_source.FileSource¢aqi_features_source’†ó†ÔØ‡óË"†ó†ÔØšŠÞ@b
+target_aqi_day32€†°–:“	timestampZdata/aqi_features.parquetŠ1feast.infra.offline_stores.file_source.FileSource¢aqi_features_source’÷ú¥Ô€Óð€"÷ú¥Ôø¬ã @b
 city_id’latest
-†ó†Ô°ú¦Þ†ó†Ô°ú¦Þ2†ó†ÔØèíÞB$c11aa8ca-2c55-48df-a114-8491af6fec28
+÷ú¥Ôø¬ã ÷ú¥Ôø¬ã 2÷ú¥Ôø¬ã B$f17ee3d6-5eb2-4817-8f24-b2bf46c3042b

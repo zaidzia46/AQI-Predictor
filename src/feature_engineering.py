@@ -72,6 +72,23 @@ def add_time_features(df):
     return df
 
 
+def add_seasonal_cyclical(df):
+    """
+    Smooth cyclical encoding of the annual season via day-of-year.
+
+    Raw integer `month` (and especially `day`-of-month) are poor encodings of
+    Lahore's dominant signal - the annual smog cycle - because they impose
+    artificial jumps (Dec=12 -> Jan=1) and no ordering between adjacent days
+    across a month boundary. sin/cos of day-of-year gives the model a
+    continuous position in the yearly cycle, which measurably helped the 2-
+    and 3-day horizons once enough winters were in the training data.
+    """
+    doy = df["timestamp"].dt.dayofyear
+    df["doy_sin"] = np.sin(2 * np.pi * doy / 365.25)
+    df["doy_cos"] = np.cos(2 * np.pi * doy / 365.25)
+    return df
+
+
 def add_lag_features(df):
     """Add lag features: value N DAYS ago, for each feature column."""
     for col in FEATURE_COLUMNS:
@@ -91,6 +108,27 @@ def add_rolling_features(df):
             df[f"{col}_rolling_mean_{window}d"] = (
                 df[col].rolling(window=window, min_periods=1).mean()
             )
+    return df
+
+
+def add_weather_rolling_features(df):
+    """
+    Rolling means of the weather drivers.
+
+    Weather is a leading indicator of AQI (wind disperses pollutants, higher
+    temperatures/mixing lower surface concentrations, high pressure traps
+    them). The raw same-day weather columns were already in the model, but
+    their short-term trend carries extra signal - a 3-day drop in wind speed
+    precedes smog build-up. We add 3-day means for the four drivers with the
+    strongest AQI correlation and 7-day means for the three most persistent.
+    Backward-looking (current + past only), so no leakage.
+    """
+    for col in ["wind_speed", "temperature", "humidity", "pressure"]:
+        if col in df.columns:
+            df[f"{col}_roll_3d"] = df[col].rolling(3, min_periods=1).mean()
+    for col in ["wind_speed", "temperature", "humidity"]:
+        if col in df.columns:
+            df[f"{col}_roll_7d"] = df[col].rolling(7, min_periods=1).mean()
     return df
 
 
@@ -118,8 +156,10 @@ def engineer_features():
     df = recalculate_daily_aqi(df)
     df = handle_missing_and_outliers(df)
     df = add_time_features(df)
+    df = add_seasonal_cyclical(df)
     df = add_lag_features(df)
     df = add_rolling_features(df)
+    df = add_weather_rolling_features(df)
     df = add_aqi_change_rate(df)
     df = add_target_columns(df)
 

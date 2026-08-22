@@ -8,3 +8,9 @@ __pycache__/
 
 .DS_Store
 Thumbs.db
+
+/experiments/
+feature_repo/online_store.db
+
+# Local backups created during experimentation
+*.bak
