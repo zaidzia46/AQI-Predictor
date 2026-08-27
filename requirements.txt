@@ -8,3 +8,5 @@ feast
 xgboost
 scikit-learn
 joblib
+altair
+streamlit
