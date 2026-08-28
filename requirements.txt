@@ -10,3 +10,4 @@ scikit-learn
 joblib
 altair
 streamlit
+shap

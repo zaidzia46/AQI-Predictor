@@ -11,6 +11,14 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 from sklearn.model_selection import RandomizedSearchCV, TimeSeriesSplit
 
+# SHAP powers the post-training feature-importance explanations shown on the
+# dashboard. Import it softly so a missing/broken shap install can never block
+# model training or the daily commit - we just skip the explanations then.
+try:
+    import shap
+except ImportError:
+    shap = None
+
 TRAIN_ENTITY_SOURCE = "data/processed/aqi_weather_data_train.csv"
 FEATURE_REPO_DIR = "feature_repo"
 MODEL_DIR = "models"
@@ -27,6 +35,11 @@ RANDOM_STATE = 42
 TEST_SIZE_FRACTION = 0.2
 CV_SPLITS = 5
 SEARCH_ITER = 20
+
+# Feature-importance (SHAP) settings: sample rows for a fast, stable global
+# ranking, and keep the top-N features for the dashboard.
+SHAP_SAMPLE_ROWS = 300
+SHAP_TOP_N = 12
 
 # --- Candidate models for per-horizon selection --------------------------
 # No single algorithm wins on every horizon, so each horizon runs its own
@@ -214,7 +227,49 @@ def train_and_evaluate(train_df, test_df, feature_fields):
     return models, metrics, selection_info
 
 
-def save_artifacts(models, metrics, selection_info, train_df, test_df, feature_fields):
+def compute_shap_importance(models, X_train, feature_fields):
+    """
+    Global feature importance via SHAP: the mean absolute SHAP value per
+    feature, per horizon, on a sample of the training rows. Both candidate
+    families (RandomForest, XGBoost) are tree models, so shap.TreeExplainer
+    gives exact, fast values.
+
+    Returns {target: [{"feature", "importance"}, ... top-N ...]}, ranked
+    high-to-low. The importance is in AQI points - roughly "how many AQI
+    points this feature moves the prediction, on average". Returns {} (and
+    warns) if shap is unavailable or errors, so the caller can still save the
+    model + metrics either way.
+    """
+    if shap is None:
+        print("shap not installed - skipping feature-importance explanations.")
+        return {}
+
+    X = X_train
+    if len(X) > SHAP_SAMPLE_ROWS:
+        X = X.sample(SHAP_SAMPLE_ROWS, random_state=RANDOM_STATE)
+
+    importance = {}
+    for col, model in models.items():
+        try:
+            explainer = shap.TreeExplainer(model)
+            values = np.asarray(explainer.shap_values(X))
+            # Single-output regression -> (n_samples, n_features). Be defensive
+            # about any trailing output dimension some shap versions add.
+            if values.ndim == 3:
+                values = values[..., 0]
+            mean_abs = np.abs(values).mean(axis=0)
+            ranked = sorted(zip(feature_fields, mean_abs), key=lambda t: t[1], reverse=True)
+            importance[col] = [
+                {"feature": f, "importance": round(float(v), 3)} for f, v in ranked[:SHAP_TOP_N]
+            ]
+            top = importance[col][0]
+            print(f"  SHAP {col}: top feature '{top['feature']}' ({top['importance']} AQI avg impact)")
+        except Exception as exc:  # never let explanations break the pipeline
+            print(f"  SHAP failed for {col}: {exc}")
+    return importance
+
+
+def save_artifacts(models, metrics, selection_info, train_df, test_df, feature_fields, shap_importance):
     os.makedirs(MODEL_DIR, exist_ok=True)
 
     joblib.dump(models, MODEL_PATH)
@@ -237,6 +292,7 @@ def save_artifacts(models, metrics, selection_info, train_df, test_df, feature_f
         ],
         "metrics": metrics,
         "model_selection": selection_info,
+        "shap_importance": shap_importance,
     }
 
     with open(METADATA_PATH, "w") as f:
@@ -248,7 +304,9 @@ def main():
     training_df, feature_fields = fetch_training_data()
     train_df, test_df = chronological_split(training_df)
     models, metrics, selection_info = train_and_evaluate(train_df, test_df, feature_fields)
-    save_artifacts(models, metrics, selection_info, train_df, test_df, feature_fields)
+    print("\nComputing SHAP feature-importance explanations...")
+    shap_importance = compute_shap_importance(models, train_df[feature_fields], feature_fields)
+    save_artifacts(models, metrics, selection_info, train_df, test_df, feature_fields, shap_importance)
 
 
 if __name__ == "__main__":

@@ -11,6 +11,7 @@ Run locally:   streamlit run dashboard/app.py
 """
 
 import json
+import re
 from datetime import timedelta
 from pathlib import Path
 
@@ -62,7 +63,38 @@ def categorize(aqi):
     return AQI_CATEGORIES[-1]
 
 
-# --- Data loading (cached; refreshes on reboot / TTL) ------------------------
+ALERT_ADVICE = {
+    "Unhealthy": "Everyone should cut back on prolonged outdoor exertion; sensitive groups should stay indoors.",
+    "Very Unhealthy": "Avoid outdoor activity. Keep windows closed and use air purification if available.",
+    "Hazardous": "Health emergency — stay indoors, seal windows, and avoid all outdoor exertion.",
+}
+
+# Raw feature column -> readable label for the SHAP importance chart.
+_PRETTY_BASE = {
+    "aqi": "AQI", "pm25": "PM2.5", "pm10": "PM10", "o3": "Ozone",
+    "no2": "NO₂", "so2": "SO₂", "co": "CO", "temperature": "Temp",
+    "humidity": "Humidity", "pressure": "Pressure", "wind_speed": "Wind",
+    "clouds": "Clouds", "month": "Month", "aqi_change_rate": "AQI change rate",
+    "doy_sin": "Season (sin)", "doy_cos": "Season (cos)",
+}
+
+
+def pretty_feature(name):
+    """Turn a raw feature column (e.g. pm25_rolling_mean_7d) into a label."""
+    if name in _PRETTY_BASE:
+        return _PRETTY_BASE[name]
+    for pat, tmpl in (
+        (r"(.+?)_lag_(\d+)d$", "{b} ({n}d lag)"),
+        (r"(.+?)_rolling_mean_(\d+)d$", "{b} ({n}d avg)"),
+        (r"(.+?)_roll_(\d+)d$", "{b} ({n}d avg)"),
+    ):
+        m = re.match(pat, name)
+        if m:
+            base = _PRETTY_BASE.get(m.group(1), m.group(1))
+            return tmpl.format(b=base, n=m.group(2))
+    return name
+
+
 @st.cache_data(ttl=1800)
 def load_metadata():
     with open(METADATA_PATH) as f:
@@ -101,7 +133,6 @@ def chart_theme(chart, height):
     )
 
 
-# --- Page setup --------------------------------------------------------------
 st.set_page_config(page_title=f"{CITY} AQI Forecast", page_icon="🌫️", layout="wide")
 
 st.markdown(
@@ -139,12 +170,15 @@ st.markdown(
       .legend-row { display:flex; align-items:center; gap:8px; margin:5px 0; font-size:.86rem; color:#0b0b0b; }
       .legend-sw { width:14px; height:14px; border-radius:4px; flex:0 0 auto; }
       .legend-rng { color:#898781; margin-left:auto; font-variant-numeric:tabular-nums; }
+
+      .alert-banner { border-radius:14px; padding:14px 18px; margin:.1rem 0 1.1rem; }
+      .alert-title { font-weight:800; font-size:1.04rem; margin-bottom:.2rem; }
+      .alert-body { color:#3a3a38; font-size:.92rem; line-height:1.4; }
     </style>
     """,
     unsafe_allow_html=True,
 )
 
-# --- Load everything, fail loudly if an artifact is missing ------------------
 try:
     meta = load_metadata()
     models = load_models()
@@ -172,7 +206,6 @@ cur_cat = categorize(cur_aqi)
 preds = {i: float(models[t].predict(X)[0]) for i, t in enumerate(TARGETS, start=1)}
 fc_dates = {i: cur_date + timedelta(days=i) for i in preds}
 
-# --- Sidebar: AQI scale + about ---------------------------------------------
 with st.sidebar:
     st.markdown(f"### 🌫️ {CITY} AQI")
     st.caption("3-day air-quality forecast, updated automatically.")
@@ -193,7 +226,6 @@ with st.sidebar:
         "AQI uses the US EPA formula."
     )
 
-# --- Header ------------------------------------------------------------------
 st.markdown(f'<div class="app-title">{CITY} Air Quality Forecast</div>', unsafe_allow_html=True)
 st.markdown(
     '<div class="app-sub">Predicted US AQI for the next three days, from a model retrained daily on live data.</div>',
@@ -202,7 +234,22 @@ st.markdown(
 trained_on = pd.to_datetime(meta.get("trained_at")).strftime("%d %b %Y")
 st.caption(f"Latest reading: {cur_date:%A, %d %b %Y}  ·  Model last retrained: {trained_on}")
 
-# --- Current conditions ------------------------------------------------------
+peak_day = max(preds, key=preds.get)
+peak_aqi = preds[peak_day]
+pc = categorize(peak_aqi)
+if pc["name"] in ALERT_ADVICE:
+    advice = ALERT_ADVICE[pc["name"]]
+    st.markdown(
+        f"""
+        <div class="alert-banner" style="border-left:6px solid {pc['color']}; background:{pc['color']}14;">
+          <div class="alert-title" style="color:{pc['color']}">⚠️ {pc['name']} air expected in the next 3 days</div>
+          <div class="alert-body">Forecast peaks at <b>AQI {peak_aqi:.0f}</b> on
+          <b>{fc_dates[peak_day]:%A, %d %b}</b> (Day&nbsp;+{peak_day}). {advice}</div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
 left, right = st.columns([1.25, 1], gap="medium")
 with left:
     st.markdown(
@@ -229,7 +276,6 @@ with right:
 
 st.markdown("###  ")
 
-# --- 3-day forecast cards ----------------------------------------------------
 st.subheader("3-Day Forecast")
 cols = st.columns(3, gap="medium")
 for i, col in zip([1, 2, 3], cols):
@@ -253,7 +299,6 @@ for i, col in zip([1, 2, 3], cols):
 
 st.markdown("###  ")
 
-# --- Trend: recent actuals + forecast ---------------------------------------
 st.subheader("AQI Trend & Forecast")
 
 recent = history.tail(30).rename(columns={"timestamp": "date", "aqi": "AQI"})[["date", "AQI"]].copy()
@@ -299,7 +344,6 @@ st.caption("Solid blue = recorded AQI (last 30 days). Dashed orange = model fore
 
 st.markdown("###  ")
 
-# --- Current pollutant levels ------------------------------------------------
 st.subheader("Current Pollutant Levels")
 poll = pd.DataFrame(
     {
@@ -319,7 +363,34 @@ st.altair_chart(chart_theme(pbar + plabels, 240), width="stretch")
 
 st.markdown("###  ")
 
-# --- Model performance -------------------------------------------------------
+shap_imp = meta.get("shap_importance")
+if shap_imp:
+    st.subheader("What Drives the Forecast")
+    st.caption(
+        "Top features ranked by SHAP importance — the average number of AQI points "
+        "each input moves the prediction. Higher = more influence."
+    )
+    labels = {"Day +1": "target_aqi_day1", "Day +2": "target_aqi_day2", "Day +3": "target_aqi_day3"}
+    pick = st.radio("Horizon", list(labels), horizontal=True, label_visibility="collapsed")
+    rows = shap_imp.get(labels[pick], [])
+    if rows:
+        imp_df = pd.DataFrame(rows)
+        imp_df["Feature"] = imp_df["feature"].map(pretty_feature)
+        sbar = alt.Chart(imp_df).mark_bar(cornerRadiusEnd=4, color=BLUE).encode(
+            x=alt.X("importance:Q", title="Mean |SHAP|  (AQI points)"),
+            y=alt.Y("Feature:N", sort="-x", title=None),
+            tooltip=[alt.Tooltip("Feature:N"), alt.Tooltip("importance:Q", format=".2f", title="AQI impact")],
+        )
+        slabels = sbar.mark_text(align="left", dx=4, color=INK_2, fontSize=11).encode(
+            text=alt.Text("importance:Q", format=".1f")
+        )
+        st.altair_chart(chart_theme(sbar + slabels, 340), width="stretch")
+        st.caption(
+            "PM2.5 and its recent history dominate — consistent with PM2.5 being "
+            "the main driver of Lahore's AQI."
+        )
+    st.markdown("###  ")
+
 st.subheader("Model Performance")
 st.caption("Held-out test accuracy (most recent 20% of days, never seen during training).")
 mcols = st.columns(3, gap="medium")
