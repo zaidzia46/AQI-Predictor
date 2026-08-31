@@ -11,9 +11,6 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 from sklearn.model_selection import RandomizedSearchCV, TimeSeriesSplit
 
-# SHAP powers the post-training feature-importance explanations shown on the
-# dashboard. Import it softly so a missing/broken shap install can never block
-# model training or the daily commit - we just skip the explanations then.
 try:
     import shap
 except ImportError:
@@ -25,7 +22,6 @@ MODEL_DIR = "models"
 MODEL_PATH = os.path.join(MODEL_DIR, "aqi_models.joblib")
 METADATA_PATH = os.path.join(MODEL_DIR, "aqi_models_metadata.json")
 
-# ---- Feast feature view / entity names ----------------------------------
 FEATURE_VIEW = "aqi_daily_features"
 ENTITY_COLUMN = "city_id"
 
@@ -36,21 +32,9 @@ TEST_SIZE_FRACTION = 0.2
 CV_SPLITS = 5
 SEARCH_ITER = 20
 
-# Feature-importance (SHAP) settings: sample rows for a fast, stable global
-# ranking, and keep the top-N features for the dashboard.
 SHAP_SAMPLE_ROWS = 300
 SHAP_TOP_N = 12
 
-# --- Candidate models for per-horizon selection --------------------------
-# No single algorithm wins on every horizon, so each horizon runs its own
-# RandomizedSearchCV across both families using TimeSeriesSplit CV on the
-# training set only, and whichever wins on CV R2 is evaluated on the held-out
-# test set. On the current data RandomForest wins all three horizons, but
-# XGBoost is close on day1 and kept as a genuine competitor.
-#
-# (Note: an earlier version imported LightGBM here, which is not in
-# requirements.txt and crashed on import; replaced with XGBoost, which is
-# installed and benchmarked competitively.)
 CANDIDATE_MODELS = {
     "RandomForest": (
         lambda: RandomForestRegressor(random_state=RANDOM_STATE, n_jobs=-1),
