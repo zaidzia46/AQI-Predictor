@@ -1,15 +1,3 @@
-"""
-Lahore AQI Forecast — Streamlit dashboard.
-
-Loads the models + features that GitHub Actions commits to this repo and shows
-the next-3-day US AQI forecast. Nothing is trained or fetched here: the daily
-"Train AQI Model" workflow commits a fresh models/aqi_models.joblib, and the
-hourly "Fetch AQI Data" workflow commits the newest data/processed/latest_features.csv.
-Streamlit Cloud redeploys on each push, so this app always serves the latest.
-
-Run locally:   streamlit run dashboard/app.py
-"""
-
 import json
 import re
 from datetime import timedelta

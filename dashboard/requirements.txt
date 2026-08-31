@@ -1,10 +1,3 @@
-# Dashboard-only dependencies for Streamlit Community Cloud.
-# Streamlit finds this file (nearest the app) before the repo-root
-# requirements.txt, so the deploy stays lightweight — no feast/xgboost needed
-# just to load the saved RandomForest models and predict.
-#
-# scikit-learn is pinned to the training version so the pickled models
-# unpickle cleanly on the cloud.
 streamlit>=1.30
 altair>=5.0
 scikit-learn==1.9.0
