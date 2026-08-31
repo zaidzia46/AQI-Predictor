@@ -1,24 +1,3 @@
-"""
-Exploratory Data Analysis (EDA) script for AQI Prediction Project.
-
-The project guide explicitly requires: "Perform EDA to identify trends."
-This script covers that requirement in one go - it loads your daily
-feature data and produces a set of plots + a short text summary showing:
-
-1. AQI trend over time (is it getting better/worse overall?)
-2. Seasonality - does AQI change by month? (e.g. worse in winter/smog season)
-3. Day-of-week pattern - any weekday vs weekend difference?
-4. Correlation between AQI and other features (which ones matter most?)
-5. Distribution of AQI values (how often is it "good" vs "hazardous"?)
-
-How to run:
-    python eda.py
-
-Output:
-    Saves plots as PNG files into an "eda_report/" folder, and prints a
-    short written summary of the key findings to the terminal.
-"""
-
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
