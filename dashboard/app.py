@@ -95,25 +95,25 @@ def pretty_feature(name):
     return name
 
 
-@st.cache_data(ttl=1800)
+@st.cache_data(ttl=1800, show_spinner=False)
 def load_metadata():
     with open(METADATA_PATH) as f:
         return json.load(f)
 
 
-@st.cache_resource
+@st.cache_resource(show_spinner=False)
 def load_models():
     return joblib.load(MODEL_PATH)
 
 
-@st.cache_data(ttl=1800)
+@st.cache_data(ttl=1800, show_spinner=False)
 def load_latest():
     df = pd.read_csv(LATEST_FEATURES_PATH)
     df["timestamp"] = pd.to_datetime(df["timestamp"])
     return df
 
 
-@st.cache_data(ttl=1800)
+@st.cache_data(ttl=1800, show_spinner=False)
 def load_history():
     df = pd.read_csv(HISTORY_PATH, usecols=lambda c: c in ("timestamp", "aqi"))
     df["timestamp"] = pd.to_datetime(df["timestamp"])
@@ -174,7 +174,28 @@ st.markdown(
       .alert-banner { border-radius:14px; padding:14px 18px; margin:.1rem 0 1.1rem; }
       .alert-title { font-weight:800; font-size:1.04rem; margin-bottom:.2rem; }
       .alert-body { color:#3a3a38; font-size:.92rem; line-height:1.4; }
+
+      .app-loader { display:flex; flex-direction:column; align-items:center; justify-content:center;
+                    min-height:60vh; gap:20px; text-align:center; }
+      .app-loader-spinner { width:66px; height:66px; border:5px solid #e1e0d9;
+                            border-top-color:#2a78d6; border-radius:50%;
+                            animation:app-spin .9s linear infinite; }
+      .app-loader-text { color:#0b0b0b; font-size:1.15rem; font-weight:700; }
+      .app-loader-sub { color:#898781; font-size:.9rem; margin-top:-8px; }
+      @keyframes app-spin { to { transform:rotate(360deg); } }
     </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+loader = st.empty()
+loader.markdown(
+    """
+    <div class="app-loader">
+      <div class="app-loader-spinner"></div>
+      <div class="app-loader-text">Loading Lahore's latest air-quality forecast…</div>
+      <div class="app-loader-sub">Fetching the freshest model and readings</div>
+    </div>
     """,
     unsafe_allow_html=True,
 )
@@ -185,12 +206,15 @@ try:
     latest = load_latest()
     history = load_history()
 except FileNotFoundError as e:
+    loader.empty()
     st.error(
         f"Could not load a required file: `{e.filename}`.\n\n"
         "Make sure the model + processed data files are committed to the repo "
         "(they are produced by the GitHub Actions workflows)."
     )
     st.stop()
+
+loader.empty()
 
 feature_cols = meta["feature_columns"]
 missing = [c for c in feature_cols if c not in latest.columns]
