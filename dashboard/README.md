@@ -3,7 +3,7 @@
 Predicts the US AQI for Lahore for the next 3 days, using the models that the
 GitHub Actions pipeline trains and commits to this repo.
 
-- **App:** [`dashboard/app.py`](app.py)
+- **App:** (https://aqi-predictor-lahore.streamlit.app/)
 - **Reads:** `models/aqi_models.joblib`, `models/aqi_models_metadata.json`,
   `data/processed/latest_features.csv`, `data/processed/aqi_weather_data_features.csv`
 - **Does not** fetch data or train — it only loads what the workflows commit.
