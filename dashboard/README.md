@@ -1,53 +1,234 @@
-# Lahore AQI Forecast — Streamlit dashboard
+# Lahore AQI Forecasting — Streamlit Dashboard
 
-Predicts the US AQI for Lahore for the next 3 days, using the models that the
-GitHub Actions pipeline trains and commits to this repo.
+This directory contains the **Streamlit web dashboard** for the Lahore AQI Forecasting System.
 
-- **App:** (https://aqi-predictor-lahore.streamlit.app/)
-- **Reads:** `models/aqi_models.joblib`, `models/aqi_models_metadata.json`,
-  `data/processed/latest_features.csv`, `data/processed/aqi_weather_data_features.csv`
-- **Does not** fetch data or train — it only loads what the workflows commit.
+The dashboard provides an easy-to-use interface for viewing current air quality information and the machine learning model's **three-day AQI forecast**.
 
-## How the model reaches the app
+## 🌐 Live Dashboard
 
-The trained model is a **file committed to this GitHub repo**
-(`models/aqi_models.joblib`, ~3 MB). Streamlit Community Cloud runs the app
-directly from the repo, so it loads that file with a plain path — no upload,
-no separate server. The daily "Train AQI Model" workflow commits a fresh model;
-Streamlit redeploys on each push, so the dashboard always serves the latest.
+### [Open Live Streamlit Dashboard](https://aqi-predictor-lahore.streamlit.app/)
 
+The deployed application can be accessed directly from the link above.
+
+---
+
+# 📊 Dashboard Features
+
+The dashboard provides the following information:
+
+### Current AQI
+
+Displays the latest available AQI value along with its corresponding AQI category.
+
+### Three-Day Forecast
+
+The trained machine learning models generate predictions for:
+
+```text
+Day +1 → Tomorrow
+Day +2 → Two days ahead
+Day +3 → Three days ahead
 ```
-GitHub Actions (hourly data + daily retrain) --commit--> repo --pull--> Streamlit Cloud --> app
+
+### Pollutant Information
+
+The dashboard displays available pollutant measurements, including:
+
+* PM2.5
+* PM10
+* CO
+* SO₂
+* NO₂
+* O₃
+
+### Weather Information
+
+Relevant weather conditions are also displayed, including variables such as:
+
+* Temperature
+* Humidity
+* Pressure
+* Wind speed
+* Cloud cover
+
+### Historical AQI
+
+Historical AQI information is visualized to help users understand recent air-quality trends.
+
+### Model Explainability
+
+SHAP-based feature importance information is used to provide insight into which features have the greatest influence on the model's predictions.
+
+### Health Information
+
+The dashboard presents health-related information based on the current AQI category to help users understand the potential air-quality risk.
+
+---
+
+# 🧠 How Predictions Reach the Dashboard
+
+The dashboard does not train the model every time a user opens the application.
+
+Instead, the overall system works as:
+
+```text
+Data Collection
+      ↓
+Data Processing
+      ↓
+Feature Engineering
+      ↓
+Feast Feature Store
+      ↓
+Model Training
+      ↓
+Saved Model Artifacts
+      ↓
+Streamlit Dashboard
+      ↓
+AQI Forecast
 ```
 
-## Run locally
+The trained models are saved as model artifacts and loaded by the dashboard for prediction.
+
+The production training pipeline creates separate targets for the three forecasting horizons and stores the trained models and metadata for later use.
+
+---
+
+# 🤖 Production Model
+
+The production forecasting system uses **Random Forest** models after comparing different approaches during development.
+
+Separate predictions are generated for:
+
+* Day +1
+* Day +2
+* Day +3
+
+The production model was selected after evaluating alternative approaches and performing additional model-improvement experiments.
+
+---
+
+# 🧪 Model Improvement Experiments
+
+Several approaches were tested to determine whether the forecasting performance could be improved.
+
+The experiments included:
+
+* XGBoost
+* Extra Trees
+* HistGradientBoosting
+* Ridge Regression
+* Delta modeling
+* Log transformation
+* Model ensembles
+* Additional PM10 history
+* Weather-history features
+* Volatility and momentum features
+* Long-term features
+* Feature interactions
+* Feature pruning
+
+Some approaches produced small improvements on a recent test period, but the improvements were not stable during expanding-window walk-forward testing.
+
+Therefore, the **Random Forest production model was retained** instead of replacing it with an approach that only performed better on a single test period.
+
+---
+
+# 📈 Model Performance
+
+The final production model achieved the following test-set results:
+
+| Forecast |    R² |   MAE |  RMSE |
+| -------- | ----: | ----: | ----: |
+| Day +1   | 0.671 | 17.61 | 26.94 |
+| Day +2   | 0.541 | 22.25 | 31.84 |
+| Day +3   | 0.506 | 23.94 | 33.03 |
+
+The strongest performance is obtained for the next-day forecast. Performance gradually decreases for longer forecasting horizons.
+
+---
+
+# 🛠️ Technologies
+
+The dashboard is built using:
+
+* **Python**
+* **Streamlit**
+* **Pandas**
+* **NumPy**
+* **Joblib**
+* **SHAP**
+* Machine learning model artifacts generated by the main training pipeline
+
+---
+
+# 🚀 Running the Dashboard Locally
+
+## 1. Install Dependencies
+
+From the project environment:
 
 ```bash
-pip install -r dashboard/requirements.txt
-streamlit run dashboard/app.py
+pip install -r requirements.txt
 ```
 
-Then open http://localhost:8501.
+## 2. Start Streamlit
 
-## Deploy to Streamlit Community Cloud (public URL)
+From the dashboard directory, run:
 
-1. Push this repo to GitHub (make sure `dashboard/app.py`, `dashboard/requirements.txt`,
-   `.streamlit/config.toml`, and the `models/` + `data/processed/` files are committed).
-2. Go to **https://share.streamlit.io** and sign in with GitHub.
-3. **Create app → Deploy a public app from GitHub** and set:
-   - **Repository:** `zaidzia46/AQI-Predictor`
-   - **Branch:** `main`
-   - **Main file path:** `dashboard/app.py`
-4. Open **Advanced settings** and set **Python version 3.11** (matches the training
-   environment, so the saved model unpickles cleanly).
-5. Click **Deploy**. The first build takes a few minutes. Your public URL will look
-   like `https://<your-app-name>.streamlit.app` — that's the URL to submit.
+```bash
+streamlit run app.py
+```
 
-Streamlit installs from `dashboard/requirements.txt` (the file nearest the app),
-which is intentionally slim — it does **not** pull in `feast`/`xgboost`, so the
-build is fast and reliable.
+The terminal will provide a local URL, normally similar to:
 
-### Keeping it fresh
-The app reboots and re-reads the committed files whenever the pipeline pushes
-(hourly data, daily model). No manual step is needed. You can also click
-**"Reboot app"** from the Streamlit dashboard to force a refresh.
+```text
+http://localhost:8501
+```
+
+Open that address in a browser to view the dashboard.
+
+---
+
+# 📁 Dashboard Structure
+
+A typical dashboard directory contains the Streamlit application and supporting resources:
+
+```text
+dashboard/
+│
+├── app.py
+├── README.md
+└── supporting dashboard files
+```
+
+The dashboard also depends on the trained model artifacts generated by the main machine learning pipeline.
+
+---
+
+# 🔄 Deployment
+
+The dashboard is deployed using **Streamlit Community Cloud**.
+
+The deployed application is available at:
+
+### [Lahore AQI Forecasting Dashboard](https://aqi-predictor-lahore.streamlit.app/)
+
+The dashboard is intended to provide a simple user-facing layer over the underlying data and machine learning pipeline.
+
+---
+
+# 📌 Important Note
+
+The dashboard's predictions depend on the availability and quality of the underlying air quality and weather data.
+
+AQI forecasting is inherently uncertain, especially for longer forecasting horizons. The predictions should therefore be treated as **forecast estimates rather than guaranteed future AQI values**.
+
+---
+
+# 👨‍💻 Project Context
+
+This dashboard is part of the **Lahore AQI Forecasting System**, developed as part of the **10Pearls SHINE Internship Program**.
+
+For information about the complete data pipeline, feature engineering, Feast feature store, model training, experiments, evaluation, and automation, refer to the **main project README**.
