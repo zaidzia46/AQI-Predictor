@@ -700,15 +700,8 @@ The project provided practical experience in:
 
 ---
 
-# 📄 License
-
-Add the appropriate license for the repository if required.
-
----
-
 # ⭐ Acknowledgements
 
 * **10Pearls SHINE Internship Program**
 * **Open-Meteo** for air quality and weather data
 * Open-source Python machine learning and data science libraries
-* Contributors and mentors involved in the project
