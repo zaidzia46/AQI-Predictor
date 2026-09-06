@@ -1,5 +1,5 @@
 {
-  "trained_at": "2026-09-05T07:49:21.602191+00:00",
+  "trained_at": "2026-09-06T08:03:46.123247+00:00",
   "model_type": "per-horizon model selection (RandomForest vs XGBoost via TimeSeriesSplit CV)",
   "targets": [
     "target_aqi_day1",
@@ -46,30 +46,30 @@
     "humidity_roll_7d"
   ],
   "n_train_rows": 1180,
-  "n_test_rows": 295,
+  "n_test_rows": 296,
   "train_date_range": [
     "2022-08-20 00:00:00+00:00",
     "2025-11-11 00:00:00+00:00"
   ],
   "test_date_range": [
     "2025-11-12 00:00:00+00:00",
-    "2026-09-02 00:00:00+00:00"
+    "2026-09-03 00:00:00+00:00"
   ],
   "metrics": {
     "target_aqi_day1": {
-      "mae": 17.526,
-      "rmse": 26.876,
-      "r2": 0.671
+      "mae": 17.529,
+      "rmse": 26.852,
+      "r2": 0.6709
     },
     "target_aqi_day2": {
-      "mae": 22.097,
-      "rmse": 31.692,
-      "r2": 0.5429
+      "mae": 22.077,
+      "rmse": 31.652,
+      "r2": 0.5425
     },
     "target_aqi_day3": {
-      "mae": 24.138,
-      "rmse": 33.058,
-      "r2": 0.505
+      "mae": 24.045,
+      "rmse": 32.933,
+      "r2": 0.5056
     }
   },
   "model_selection": {
