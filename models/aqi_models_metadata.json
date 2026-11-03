@@ -1,5 +1,5 @@
 {
-  "trained_at": "2026-11-02T11:31:40.833413+00:00",
+  "trained_at": "2026-11-03T11:06:44.368468+00:00",
   "model_type": "per-horizon model selection (RandomForest vs XGBoost via TimeSeriesSplit CV)",
   "targets": [
     "target_aqi_day1",
@@ -45,31 +45,31 @@
     "temperature_roll_7d",
     "humidity_roll_7d"
   ],
-  "n_train_rows": 1226,
+  "n_train_rows": 1227,
   "n_test_rows": 307,
   "train_date_range": [
     "2022-08-20 00:00:00+00:00",
-    "2025-12-27 00:00:00+00:00"
+    "2025-12-28 00:00:00+00:00"
   ],
   "test_date_range": [
-    "2025-12-28 00:00:00+00:00",
-    "2026-10-30 00:00:00+00:00"
+    "2025-12-29 00:00:00+00:00",
+    "2026-10-31 00:00:00+00:00"
   ],
   "metrics": {
     "target_aqi_day1": {
-      "mae": 17.124,
-      "rmse": 26.587,
-      "r2": 0.6339
+      "mae": 17.175,
+      "rmse": 26.598,
+      "r2": 0.6321
     },
     "target_aqi_day2": {
-      "mae": 21.539,
-      "rmse": 31.09,
-      "r2": 0.4974
+      "mae": 21.455,
+      "rmse": 31.02,
+      "r2": 0.4977
     },
     "target_aqi_day3": {
-      "mae": 23.494,
-      "rmse": 32.413,
-      "r2": 0.4519
+      "mae": 23.553,
+      "rmse": 32.487,
+      "r2": 0.4466
     }
   },
   "model_selection": {
@@ -81,17 +81,17 @@
         "max_features": 0.5,
         "max_depth": 5
       },
-      "cv_r2": 0.549
+      "cv_r2": 0.5498
     },
     "target_aqi_day2": {
       "algorithm": "RandomForest",
       "params": {
-        "n_estimators": 200,
+        "n_estimators": 300,
         "min_samples_leaf": 15,
-        "max_features": 0.7,
-        "max_depth": 5
+        "max_features": "sqrt",
+        "max_depth": 8
       },
-      "cv_r2": 0.2905
+      "cv_r2": 0.2948
     },
     "target_aqi_day3": {
       "algorithm": "RandomForest",
@@ -101,158 +101,158 @@
         "max_features": "sqrt",
         "max_depth": 8
       },
-      "cv_r2": 0.2214
+      "cv_r2": 0.2331
     }
   },
   "shap_importance": {
     "target_aqi_day1": [
       {
         "feature": "pm25",
-        "importance": 12.649
+        "importance": 12.883
       },
       {
         "feature": "aqi",
-        "importance": 7.512
+        "importance": 7.609
       },
       {
         "feature": "pm25_rolling_mean_3d",
-        "importance": 2.53
+        "importance": 2.566
       },
       {
         "feature": "aqi_rolling_mean_3d",
-        "importance": 1.023
+        "importance": 1.048
       },
       {
         "feature": "co",
-        "importance": 0.899
+        "importance": 0.954
       },
       {
         "feature": "clouds",
-        "importance": 0.747
+        "importance": 0.762
       },
       {
         "feature": "so2",
-        "importance": 0.696
+        "importance": 0.752
       },
       {
         "feature": "pm10",
-        "importance": 0.586
+        "importance": 0.617
       },
       {
         "feature": "pm25_rolling_mean_7d",
-        "importance": 0.578
+        "importance": 0.544
       },
       {
         "feature": "pm25_rolling_mean_14d",
-        "importance": 0.488
+        "importance": 0.517
       },
       {
         "feature": "aqi_rolling_mean_14d",
-        "importance": 0.477
+        "importance": 0.501
       },
       {
         "feature": "aqi_change_rate",
-        "importance": 0.47
+        "importance": 0.44
       }
     ],
     "target_aqi_day2": [
       {
         "feature": "pm25",
-        "importance": 10.493
-      },
-      {
-        "feature": "pm25_rolling_mean_14d",
-        "importance": 4.105
+        "importance": 3.718
       },
       {
         "feature": "aqi",
-        "importance": 3.232
+        "importance": 3.344
       },
       {
         "feature": "pm25_rolling_mean_7d",
-        "importance": 2.306
+        "importance": 2.897
+      },
+      {
+        "feature": "pm25_rolling_mean_14d",
+        "importance": 2.774
       },
       {
         "feature": "pm25_rolling_mean_3d",
-        "importance": 2.027
+        "importance": 2.565
       },
       {
         "feature": "aqi_rolling_mean_14d",
-        "importance": 1.949
+        "importance": 1.598
       },
       {
-        "feature": "clouds",
-        "importance": 1.735
+        "feature": "aqi_rolling_mean_7d",
+        "importance": 1.533
       },
       {
-        "feature": "doy_cos",
-        "importance": 1.546
+        "feature": "aqi_rolling_mean_3d",
+        "importance": 1.336
       },
       {
         "feature": "pm25_lag_1d",
-        "importance": 1.047
+        "importance": 1.3
       },
       {
-        "feature": "pressure",
-        "importance": 0.794
+        "feature": "doy_cos",
+        "importance": 1.219
       },
       {
-        "feature": "doy_sin",
-        "importance": 0.788
+        "feature": "clouds",
+        "importance": 1.124
       },
       {
-        "feature": "pressure_roll_3d",
-        "importance": 0.579
+        "feature": "co",
+        "importance": 0.958
       }
     ],
     "target_aqi_day3": [
       {
         "feature": "pm25_rolling_mean_14d",
-        "importance": 4.022
+        "importance": 4.13
       },
       {
         "feature": "pm25",
-        "importance": 3.432
+        "importance": 3.539
       },
       {
         "feature": "aqi",
-        "importance": 3.053
+        "importance": 3.033
       },
       {
         "feature": "pm25_rolling_mean_7d",
-        "importance": 2.751
+        "importance": 2.784
       },
       {
         "feature": "doy_cos",
-        "importance": 1.955
+        "importance": 2.153
       },
       {
         "feature": "aqi_rolling_mean_14d",
-        "importance": 1.734
+        "importance": 1.824
       },
       {
         "feature": "pm25_rolling_mean_3d",
-        "importance": 1.658
+        "importance": 1.659
       },
       {
         "feature": "doy_sin",
-        "importance": 1.442
+        "importance": 1.434
       },
       {
         "feature": "aqi_rolling_mean_7d",
-        "importance": 1.281
+        "importance": 1.372
       },
       {
         "feature": "aqi_rolling_mean_3d",
-        "importance": 1.201
+        "importance": 1.25
       },
       {
         "feature": "pressure_roll_3d",
-        "importance": 1.148
+        "importance": 1.179
       },
       {
         "feature": "pressure",
-        "importance": 1.024
+        "importance": 1.085
       }
     ]
   }
