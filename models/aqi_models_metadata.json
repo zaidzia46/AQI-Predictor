@@ -1,5 +1,5 @@
 {
-  "trained_at": "2026-11-05T11:16:01.317338+00:00",
+  "trained_at": "2026-11-06T11:15:13.524818+00:00",
   "model_type": "per-horizon model selection (RandomForest vs XGBoost via TimeSeriesSplit CV)",
   "targets": [
     "target_aqi_day1",
@@ -45,31 +45,31 @@
     "temperature_roll_7d",
     "humidity_roll_7d"
   ],
-  "n_train_rows": 1228,
+  "n_train_rows": 1229,
   "n_test_rows": 308,
   "train_date_range": [
     "2022-08-20 00:00:00+00:00",
-    "2025-12-29 00:00:00+00:00"
+    "2025-12-30 00:00:00+00:00"
   ],
   "test_date_range": [
-    "2025-12-30 00:00:00+00:00",
-    "2026-11-02 00:00:00+00:00"
+    "2025-12-31 00:00:00+00:00",
+    "2026-11-03 00:00:00+00:00"
   ],
   "metrics": {
     "target_aqi_day1": {
-      "mae": 17.201,
-      "rmse": 26.58,
-      "r2": 0.6304
+      "mae": 17.197,
+      "rmse": 26.59,
+      "r2": 0.6292
     },
     "target_aqi_day2": {
-      "mae": 21.377,
-      "rmse": 30.996,
-      "r2": 0.4962
+      "mae": 21.349,
+      "rmse": 30.987,
+      "r2": 0.4956
     },
     "target_aqi_day3": {
-      "mae": 23.528,
-      "rmse": 32.497,
-      "r2": 0.4486
+      "mae": 23.39,
+      "rmse": 32.357,
+      "r2": 0.4479
     }
   },
   "model_selection": {
@@ -81,7 +81,7 @@
         "max_features": 0.5,
         "max_depth": 5
       },
-      "cv_r2": 0.5523
+      "cv_r2": 0.5556
     },
     "target_aqi_day2": {
       "algorithm": "RandomForest",
@@ -91,7 +91,7 @@
         "max_features": "sqrt",
         "max_depth": 8
       },
-      "cv_r2": 0.3042
+      "cv_r2": 0.3075
     },
     "target_aqi_day3": {
       "algorithm": "RandomForest",
@@ -101,158 +101,158 @@
         "max_features": "sqrt",
         "max_depth": 8
       },
-      "cv_r2": 0.2404
+      "cv_r2": 0.2392
     }
   },
   "shap_importance": {
     "target_aqi_day1": [
       {
         "feature": "pm25",
-        "importance": 12.479
+        "importance": 12.679
       },
       {
         "feature": "aqi",
-        "importance": 7.441
+        "importance": 7.575
       },
       {
         "feature": "pm25_rolling_mean_3d",
-        "importance": 2.506
+        "importance": 2.546
       },
       {
         "feature": "aqi_rolling_mean_3d",
-        "importance": 1.017
+        "importance": 1.035
       },
       {
         "feature": "co",
-        "importance": 0.96
+        "importance": 0.965
       },
       {
         "feature": "so2",
-        "importance": 0.768
+        "importance": 0.758
       },
       {
         "feature": "clouds",
-        "importance": 0.739
+        "importance": 0.749
       },
       {
         "feature": "pm10",
-        "importance": 0.59
+        "importance": 0.633
       },
       {
         "feature": "pm25_rolling_mean_7d",
-        "importance": 0.53
+        "importance": 0.525
       },
       {
         "feature": "pm25_rolling_mean_14d",
-        "importance": 0.508
+        "importance": 0.502
       },
       {
         "feature": "aqi_rolling_mean_14d",
-        "importance": 0.493
+        "importance": 0.498
       },
       {
         "feature": "aqi_change_rate",
-        "importance": 0.485
+        "importance": 0.497
       }
     ],
     "target_aqi_day2": [
       {
         "feature": "pm25",
-        "importance": 3.624
+        "importance": 3.672
       },
       {
         "feature": "aqi",
-        "importance": 3.282
+        "importance": 3.333
       },
       {
         "feature": "pm25_rolling_mean_7d",
-        "importance": 2.811
+        "importance": 2.869
       },
       {
         "feature": "pm25_rolling_mean_14d",
-        "importance": 2.698
+        "importance": 2.721
       },
       {
         "feature": "pm25_rolling_mean_3d",
-        "importance": 2.433
+        "importance": 2.469
       },
       {
         "feature": "aqi_rolling_mean_14d",
-        "importance": 1.552
+        "importance": 1.579
       },
       {
         "feature": "aqi_rolling_mean_7d",
-        "importance": 1.511
+        "importance": 1.512
       },
       {
         "feature": "aqi_rolling_mean_3d",
-        "importance": 1.299
+        "importance": 1.291
       },
       {
         "feature": "pm25_lag_1d",
-        "importance": 1.274
+        "importance": 1.275
       },
       {
         "feature": "doy_cos",
-        "importance": 1.207
+        "importance": 1.175
       },
       {
         "feature": "clouds",
-        "importance": 1.059
+        "importance": 1.08
       },
       {
         "feature": "co",
-        "importance": 0.994
+        "importance": 0.968
       }
     ],
     "target_aqi_day3": [
       {
         "feature": "pm25_rolling_mean_14d",
-        "importance": 3.876
+        "importance": 4.007
       },
       {
         "feature": "pm25",
-        "importance": 3.537
+        "importance": 3.462
       },
       {
         "feature": "aqi",
-        "importance": 3.001
+        "importance": 2.978
       },
       {
         "feature": "pm25_rolling_mean_7d",
-        "importance": 2.765
+        "importance": 2.731
       },
       {
         "feature": "doy_cos",
-        "importance": 2.069
+        "importance": 2.117
       },
       {
         "feature": "aqi_rolling_mean_14d",
-        "importance": 1.79
+        "importance": 1.802
       },
       {
         "feature": "pm25_rolling_mean_3d",
-        "importance": 1.634
+        "importance": 1.632
       },
       {
         "feature": "doy_sin",
-        "importance": 1.458
+        "importance": 1.492
       },
       {
         "feature": "aqi_rolling_mean_7d",
-        "importance": 1.34
+        "importance": 1.319
       },
       {
         "feature": "aqi_rolling_mean_3d",
-        "importance": 1.208
+        "importance": 1.24
       },
       {
         "feature": "pressure_roll_3d",
-        "importance": 1.203
+        "importance": 1.226
       },
       {
         "feature": "pressure",
-        "importance": 1.079
+        "importance": 1.056
       }
     ]
   }
